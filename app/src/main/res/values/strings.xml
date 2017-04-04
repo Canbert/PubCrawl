@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pub Crawl</string>
+    <string name="home_generate">Generate Crawl</string>
+    <string name="home_saved">Saved Crawls</string>
+</resources>

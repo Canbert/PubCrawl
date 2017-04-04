@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colourBlackOlive</item>
+        <item name="colorPrimaryDark">@color/colourRaisinBlack</item>
+        <item name="colorAccent">@color/colourSteelBlue</item>
+        <item name="android:colorBackground">@color/colourBlackOlive</item>
+        <item name="android:colorForeground">@color/colourFloralWhite</item>
+        <item name="android:textColorPrimary">@color/colourFloralWhite</item>
+        <item name="android:textColorPrimaryInverse">@color/colourRaisinBlack</item>
+        <item name="android:textColorSecondary">@color/colourPaleSilver</item>
+        <item name="android:textColorSecondaryInverse">@color/colourBlackOlive</item>
+        <item name="android:windowBackground">@color/colourBlackOlive</item>
+    </style>
+
+</resources>
