@@ -15,7 +15,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap map;
     private Button btnGenerate;
@@ -43,12 +43,25 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
     //set a marker to the center of the map
     private void updatePositionMarker(){
+        //clear the map of markers
+        map.clear();
+        //add the centered marker
         map.addMarker(new MarkerOptions().position(map.getCameraPosition().target));
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        //set map camera movement listener
+        map.setOnCameraMoveListener(this);
+
+        //add the centered marker
+        updatePositionMarker();
+    }
+
+    @Override
+    public void onCameraMove() {
         updatePositionMarker();
     }
 
