@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
@@ -40,9 +41,15 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
+    //set a marker to the center of the map
+    private void updatePositionMarker(){
+        map.addMarker(new MarkerOptions().position(map.getCameraPosition().target));
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        updatePositionMarker();
     }
 
     @Override
