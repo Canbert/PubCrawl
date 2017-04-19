@@ -3,6 +3,6 @@
     <string name="home_generate">Generate Crawl</string>
     <string name="home_saved">Saved Crawls</string>
     <string name="generate_location">Location</string>
-    <string name="generate_pubs">Number of Pubs</string>
+    <string name="generate_pubs">Number of Pubs:</string>
     <string name="generate_create">Create Crawl</string>
 </resources>
