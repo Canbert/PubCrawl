@@ -33,13 +33,13 @@
         android:textAppearance="@style/TextAppearance.AppCompat" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/seekBarPubs"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.02"
         android:max="10"
-        android:progress="0"
-        android:layout_weight="0.02" />
+        android:progress="0" />
 
     <Button
         android:id="@+id/btnCreate"
