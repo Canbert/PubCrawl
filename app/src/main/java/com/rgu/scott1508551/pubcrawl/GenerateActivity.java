@@ -1,8 +1,11 @@
 package com.rgu.scott1508551.pubcrawl;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
@@ -11,11 +14,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
-public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener {
+public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener {
 
     private GoogleMap map;
     private Button btnGenerate;
     private SeekBar seekBarPubs;
+    private Bundle data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,9 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         //assign the button, and seekbar
         btnGenerate = (Button)this.findViewById(R.id.btnCreate);
         seekBarPubs = (SeekBar)this.findViewById(R.id.seekBarPubs);
+
+        //set button on click listener
+        btnGenerate.setOnClickListener(this);
 
         //set seekbar on change listener
         seekBarPubs.setOnSeekBarChangeListener(this);
@@ -48,4 +55,17 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    @Override
+    public void onClick(View v) {
+        Intent in;
+        data = new Bundle();
+
+        //add the number of pubs to the bundle, add one so the minimum is 1 instead of 0
+        data.putInt("numPubs",seekBarPubs.getProgress() + 1);
+
+        in = new Intent(this, EditCrawlActivity.class);
+        in.putExtras(data);
+        startActivity(in);
+    }
 }
