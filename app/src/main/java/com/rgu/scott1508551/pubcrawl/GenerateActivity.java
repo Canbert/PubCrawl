@@ -96,7 +96,8 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         //add the number of pubs to the bundle, add one so the minimum is 1 instead of 0
         data.putInt("numPubs",numPubs);
         //add the location that the camera is looking at, for generating pubs around that point
-        data.putParcelable("LatLng", map.getCameraPosition().target);
+        data.putDouble("lat",map.getCameraPosition().target.latitude);
+        data.putDouble("lng",map.getCameraPosition().target.longitude);
 
         in = new Intent(this, EditCrawlActivity.class);
         in.putExtras(data);
