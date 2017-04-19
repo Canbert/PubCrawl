@@ -4,6 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rgu.scott1508551.pubcrawl.EditCrawlActivity">
+    tools:context="com.rgu.scott1508551.pubcrawl.EditCrawlActivity"
+    android:orientation="vertical"
+    android:weightSum="1">
 
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="264dp" />
+
+    <ListView
+        android:id="@+id/listViewPubs"
+        android:layout_width="match_parent"
+        android:layout_height="163dp"
+        android:layout_weight="0.99" />
+
+    <Button
+        android:id="@+id/btnStartCrawl"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_crawl_start"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
+
+    <Button
+        android:id="@+id/btnSaveCrawl"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_crawl_save"
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 </LinearLayout>
