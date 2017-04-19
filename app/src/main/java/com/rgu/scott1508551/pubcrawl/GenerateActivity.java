@@ -16,6 +16,10 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap map;
@@ -23,6 +27,9 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
     private Button btnGenerate;
     private SeekBar seekBarPubs;
     private Bundle data;
+    private JsonHttpRequest task;
+    private JSONArray jsonArray;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,15 +100,52 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         Intent in;
         data = new Bundle();
 
-        //add the number of pubs to the bundle, add one so the minimum is 1 instead of 0
-        data.putInt("numPubs",numPubs);
-        //add the location that the camera is looking at, for generating pubs around that point
-        data.putDouble("lat",map.getCameraPosition().target.latitude);
-        data.putDouble("lng",map.getCameraPosition().target.longitude);
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+                + "location=" + map.getCameraPosition().target.latitude + "," + map.getCameraPosition().target.longitude
+                + "&radius=2000"
+                + "&types=" + "bar"
+                + "&key=" + getResources().getString(R.string.google_maps_key);
+
+        parseJson();
 
         in = new Intent(this, EditCrawlActivity.class);
         in.putExtras(data);
         Log.d("Data Bundle", data.toString());
         startActivity(in);
+    }
+
+    private void parseJson(){
+
+        String str;
+
+        if(task == null){
+            task = new JsonHttpRequest();
+            task.execute(url);
+        }
+
+        JSONObject tmp;
+        try{
+            jsonArray = task.getResultAsJSON();
+
+            if(jsonArray == null){
+                Log.d("JSON","Still Loading json");
+                return;
+            }
+
+            str = "";
+
+            str += jsonArray.toString();
+
+            Log.d("JSON RETURN",str);
+
+            for(int i = 0; i < jsonArray.length(); i++){
+                tmp = jsonArray.getJSONObject(i);
+                str += tmp.getString("results") + "\n";
+            }
+        }
+        catch (JSONException ex){
+            Log.d("JSON", ex.getMessage());
+        }
+
     }
 }
