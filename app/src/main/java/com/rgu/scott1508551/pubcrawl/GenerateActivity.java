@@ -1,7 +1,9 @@
 package com.rgu.scott1508551.pubcrawl;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,10 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap map;
@@ -23,6 +29,8 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
     private Button btnGenerate;
     private SeekBar seekBarPubs;
     private Bundle data;
+    private ProgressDialog pDialog;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +107,70 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         data.putDouble("lat",map.getCameraPosition().target.latitude);
         data.putDouble("lng",map.getCameraPosition().target.longitude);
 
-        in = new Intent(this, EditCrawlActivity.class);
-        in.putExtras(data);
-        Log.d("Data Bundle", data.toString());
-        startActivity(in);
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+                + "location=" + map.getCameraPosition().target.latitude + "," +  map.getCameraPosition().target.longitude
+                + "&radius=2000"
+                + "&types=bar"
+                + "&key=" + getResources().getString(R.string.google_maps_key);
+
+
+        new GetPubs().execute();
+//        in = new Intent(this, EditCrawlActivity.class);
+//        in.putExtras(data);
+//        Log.d("Data Bundle", data.toString());
+//        startActivity(in);
+    }
+
+    private class GetPubs extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            pDialog = new ProgressDialog(GenerateActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+
+            Log.d("JSON Response", "Response from url: " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    JSONArray pubs = jsonObj.getJSONArray("results");
+
+                    Log.d("JSON STRING",pubs.toString());
+                }
+                catch (final JSONException e) {
+                    Log.d("JSON", "Json parsing error: " + e.getMessage());
+                }
+            }
+            else{
+                Log.d("JSON","Couldn't get json");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+
+            Log.d("JSON","DONE TASK");
+        }
     }
 }
