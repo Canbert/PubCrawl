@@ -12,27 +12,39 @@
         android:id="@+id/map"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="264dp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.5" />
 
     <ListView
         android:id="@+id/listViewPubs"
         android:layout_width="match_parent"
-        android:layout_height="163dp"
-        android:layout_weight="0.99" />
+        android:layout_height="0dp"
+        android:layout_weight="0.4" />
 
-    <Button
-        android:id="@+id/btnStartCrawl"
-        style="@style/Widget.AppCompat.Button.Colored"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_crawl_start"
-        android:textAppearance="@style/TextAppearance.AppCompat" />
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnSaveCrawl"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_crawl_save"
-        android:textAppearance="@style/TextAppearance.AppCompat" />
+        <Button
+            android:id="@+id/btnSaveCrawl"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_menu_save"
+            android:text="@string/edit_crawl_save"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <Button
+            android:id="@+id/btnStartCrawl"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/edit_crawl_start"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+    </LinearLayout>
+
 </LinearLayout>
