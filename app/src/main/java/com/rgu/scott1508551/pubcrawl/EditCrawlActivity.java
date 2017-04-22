@@ -1,5 +1,7 @@
 package com.rgu.scott1508551.pubcrawl;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +11,19 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private GoogleMap map;
+
     private Bundle data;
     private ArrayList bars;
+
+    private ProgressDialog pDialog;
 
     private String url;
 
@@ -56,7 +65,9 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
 
+        new GetRoute().execute();
     }
 
     private String waypointsString(){
@@ -73,5 +84,56 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         return str;
+    }
+
+    private class GetRoute extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            pDialog = new ProgressDialog(EditCrawlActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+
+            Log.d("JSON Response", jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    Log.d("JSON RESULTS",jsonObj.toString());
+                }
+                catch (final JSONException e) {
+                    Log.d("JSON", "Json parsing error: " + e.getMessage());
+                }
+            }
+            else{
+                Log.d("JSON","Couldn't get json");
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+
+
+        }
     }
 }
