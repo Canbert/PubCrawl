@@ -9,11 +9,14 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    Bundle data;
-    LatLng latLng;
-    int numPubs;
+    private Bundle data;
+    private ArrayList bars;
+
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +30,48 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         data = getIntent().getExtras();
         Log.d("Edit Crawl Bundle", data.toString());
 
-        //set the values of latLng and numPubs from the bundle
-        latLng = new LatLng(data.getDouble("lat"), data.getDouble("lng"));
-        numPubs = data.getInt("numPubs");
+        bars = data.getStringArrayList("bars");
 
-        Log.d("Edit Crawl latLng", String.valueOf(latLng));
-        Log.d("Edit Crawl numPubs", String.valueOf(numPubs));
+        //set the start end end points
+        String origin = bars.get(0).toString();
+        String destination = bars.get(bars.size() - 1).toString();
+
+        Log.d("ORIGIN",origin);
+        Log.d("DESTINATION", destination);
+
+        //remove first and last locations
+        bars.remove(0);
+        bars.remove(bars.size() - 1);
+
+        url = "https://maps.googleapis.com/maps/api/directions/json?"
+                + "origin=place_id:" + origin
+                + "&destination=place_id:" + destination
+                + "&waypoints=optimize:true|" + waypointsString()
+                + "&key=" + getResources().getString(R.string.google_maps_key);
+
+        Log.d("URL",url);
+
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+    }
+
+    private String waypointsString(){
+        String str = "";
+
+        for(int i = 0; i < bars.size(); i++){
+            if(i == bars.size() - 1){
+                str += "place_id:" + bars.get(i);
+            }
+            else{
+                str += "place_id:" + bars.get(i) + "|";
+            }
+
+        }
+
+        return str;
     }
 }
