@@ -1,9 +1,16 @@
 package com.rgu.scott1508551.pubcrawl;
 
+import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap map;
@@ -27,9 +36,13 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
     private Button btnGenerate;
     private SeekBar seekBarPubs;
     private Bundle data;
-    private JsonHttpRequest task;
-    private JSONArray jsonArray;
+
+    private ProgressDialog pDialog;
+    private AlertDialog errorDialog;
     private String url;
+
+    private JSONArray results;
+    private ArrayList bars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +54,8 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         //assign the button, and seekbar
         btnGenerate = (Button)this.findViewById(R.id.btnCreate);
         seekBarPubs = (SeekBar)this.findViewById(R.id.seekBarPubs);
+
+        bars = new ArrayList();
 
         //set the num pubs
         setNumPubs();
@@ -97,55 +112,121 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onClick(View v) {
-        Intent in;
-        data = new Bundle();
-
         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-                + "location=" + map.getCameraPosition().target.latitude + "," + map.getCameraPosition().target.longitude
+                + "location=" + map.getCameraPosition().target.latitude + "," +  map.getCameraPosition().target.longitude
                 + "&radius=2000"
-                + "&types=" + "bar"
+                + "&types=bar"
                 + "&key=" + getResources().getString(R.string.google_maps_key);
 
-        parseJson();
 
-        in = new Intent(this, EditCrawlActivity.class);
-        in.putExtras(data);
-        Log.d("Data Bundle", data.toString());
-        startActivity(in);
+        new GetPubs().execute();
     }
 
-    private void parseJson(){
+    public GenerateActivity getOuter(){
+        return GenerateActivity.this;
+    }
 
-        String str;
+    private class GetPubs extends AsyncTask<Void, Void, Void> {
 
-        if(task == null){
-            task = new JsonHttpRequest();
-            task.execute(url);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            pDialog = new ProgressDialog(GenerateActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
         }
 
-        JSONObject tmp;
-        try{
-            jsonArray = task.getResultAsJSON();
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
 
-            if(jsonArray == null){
-                Log.d("JSON","Still Loading json");
-                return;
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+
+            Log.d("JSON Response", "Response from url: " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    results = jsonObj.getJSONArray("results");
+
+                    Log.d("JSON RESULTS",results.toString());
+                }
+                catch (final JSONException e) {
+                    Log.d("JSON", "Json parsing error: " + e.getMessage());
+                }
+            }
+            else{
+                Log.d("JSON","Couldn't get json");
             }
 
-            str = "";
+            return null;
+        }
 
-            str += jsonArray.toString();
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
 
-            Log.d("JSON RETURN",str);
+            Intent in;
+            data = new Bundle();
 
-            for(int i = 0; i < jsonArray.length(); i++){
-                tmp = jsonArray.getJSONObject(i);
-                str += tmp.getString("results") + "\n";
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+
+            if(results.length() > 0){
+                Log.d("JSON","NOT EMPTY");
+
+                try {
+                    JSONArray json = new JSONArray(results.toString());
+
+                    Log.d("JSON ARRAY", json.toString());
+
+                    for(int i = 0;i<numPubs;i++){
+                        JSONObject bar = json.getJSONObject(i);
+
+                        Log.d("JSON OBJ", bar.toString());
+
+                        bars.add(bar.getString("place_id"));
+
+                        Log.d("JSON PLACEID", bar.getString("place_id"));
+                    }
+
+                    data.putStringArrayList("bars",bars);
+
+                    Log.d("BARS ARRAY", bars.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                in = new Intent(getOuter(), EditCrawlActivity.class);
+                in.putExtras(data);
+                Log.d("Data Bundle", data.toString());
+                startActivity(in);
             }
-        }
-        catch (JSONException ex){
-            Log.d("JSON", ex.getMessage());
-        }
+            else{
+                errorDialog = new AlertDialog.Builder(GenerateActivity.this, R.style.AppTheme).create();
+                errorDialog.setTitle("No Bars Found");
+                errorDialog.setMessage("Please Try Again");
+                errorDialog.getWindow().setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+                errorDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                errorDialog.show();
+                Log.d("JSON","EMPTY");
+            }
 
+            Log.d("JSON","DONE TASK");
+        }
     }
 }
