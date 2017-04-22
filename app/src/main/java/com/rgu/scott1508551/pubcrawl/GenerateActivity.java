@@ -27,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GenerateActivity extends FragmentActivity implements OnMapReadyCallback, SeekBar.OnSeekBarChangeListener, View.OnClickListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap map;
@@ -39,7 +41,8 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
     private AlertDialog errorDialog;
     private String url;
 
-    private JSONArray pubs;
+    private JSONArray results;
+    private ArrayList bars;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,8 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         //assign the button, and seekbar
         btnGenerate = (Button)this.findViewById(R.id.btnCreate);
         seekBarPubs = (SeekBar)this.findViewById(R.id.seekBarPubs);
+
+        bars = new ArrayList();
 
         //set the num pubs
         setNumPubs();
@@ -148,9 +153,9 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
                     JSONObject jsonObj = new JSONObject(jsonStr);
 
                     // Getting JSON Array node
-                    pubs = jsonObj.getJSONArray("results");
+                    results = jsonObj.getJSONArray("results");
 
-                    Log.d("JSON STRING",pubs.toString());
+                    Log.d("JSON RESULTS",results.toString());
                 }
                 catch (final JSONException e) {
                     Log.d("JSON", "Json parsing error: " + e.getMessage());
@@ -174,10 +179,31 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
             if (pDialog.isShowing())
                 pDialog.dismiss();
 
-            if(pubs.length() > 0){
+            if(results.length() > 0){
                 Log.d("JSON","NOT EMPTY");
 
-                data.putString("JSON",pubs.toString());
+                try {
+                    JSONArray json = new JSONArray(results.toString());
+
+                    Log.d("JSON ARRAY", json.toString());
+
+                    for(int i = 0;i<numPubs;i++){
+                        JSONObject bar = json.getJSONObject(i);
+
+                        Log.d("JSON OBJ", bar.toString());
+
+                        bars.add(bar.getString("place_id"));
+
+                        Log.d("JSON PLACEID", bar.getString("place_id"));
+                    }
+
+                    data.putStringArrayList("bars",bars);
+
+                    Log.d("BARS ARRAY", bars.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 in = new Intent(getOuter(), EditCrawlActivity.class);
                 in.putExtras(data);
