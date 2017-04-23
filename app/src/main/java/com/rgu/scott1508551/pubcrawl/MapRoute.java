@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -112,6 +113,24 @@ public class MapRoute {
 
         map.moveCamera(center);
         map.animateCamera(zoom);
+    }
+
+    public void createRoute(String json){
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+
+            // routesArray contains ALL routes
+            JSONArray routesArray = jsonObject.getJSONArray("routes");
+            // Grab the first route
+            JSONObject route = routesArray.getJSONObject(0);
+
+            JSONObject poly = route.getJSONObject("overview_polyline");
+            String polyline = poly.getString("points");
+
+            this.setPontos(this.decodePoly(polyline));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<LatLng> decodePoly(String encoded) {

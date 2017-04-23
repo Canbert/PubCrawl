@@ -98,11 +98,11 @@ public class DatabaseUtility {
                         cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
 
                 for(int i = 0; i < jsonBars.length(); i++){
-                    bar
+//                    bar
                 }
 
                 data.putParcelableArrayList("bars",bars);
-                data.putParcelableArrayList("pontos",pontos);
+//                data.putParcelableArrayList("pontos",pontos);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -235,18 +235,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
                     input.close();
                 }
 
-                String jsonOutput = response.toString();
-
-                JSONObject jsonObject = new JSONObject(jsonOutput);
-
-                // routesArray contains ALL routes
-                JSONArray routesArray = jsonObject.getJSONArray("routes");
-                // Grab the first route
-                JSONObject route = routesArray.getJSONObject(0);
-
-                JSONObject poly = route.getJSONObject("overview_polyline");
-                String polyline = poly.getString("points");
-                mapRoute.setPontos(mapRoute.decodePoly(polyline));
+                mapRoute.createRoute(response.toString());
 
             } catch (Exception e) {
 
