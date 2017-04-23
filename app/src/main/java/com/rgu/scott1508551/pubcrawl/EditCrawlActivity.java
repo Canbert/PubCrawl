@@ -1,13 +1,16 @@
 package com.rgu.scott1508551.pubcrawl;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,7 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap map;
 
@@ -42,7 +45,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
     private ListView barsList;
     private ArrayAdapter adapter;
-
+    private Button btnSave;
+    private Button btnStart;
     private ProgressDialog pDialog;
 
     private String stringUrl;
@@ -59,6 +63,14 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         //set the bars list
         barsList = (ListView)this.findViewById(R.id.listViewPubs);
+
+        //set the buttons
+        btnSave = (Button)this.findViewById(R.id.btnSaveCrawl);
+        btnStart = (Button)this.findViewById(R.id.btnStartCrawl);
+
+        //set button on click listeners
+        btnSave.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
 
         //set the bundle to the bundle sent from generate activity
         data = getIntent().getExtras();
@@ -176,6 +188,20 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         map.moveCamera(center);
         map.animateCamera(zoom);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        Intent in;
+
+        if(v.getId() == R.id.btnSaveCrawl){
+
+        } else{
+            in = new Intent(EditCrawlActivity.this, CrawlActivity.class);
+            in.putExtras(data);
+            startActivity(in);
+        }
     }
 
     class GetDirection extends AsyncTask<String, String, String> {
