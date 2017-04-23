@@ -216,20 +216,17 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         protected void onPostExecute(String file_url) {
-            for (int i = 0; i < mapRoute.getPontos().size() - 1; i++) {
-                LatLng src = mapRoute.getPontos().get(i);
-                LatLng dest = mapRoute.getPontos().get(i + 1);
-                try{
+            try{
 
-//                    mapRoute.drawRoute();
-                    mapRoute.addWaypoints();
+                mapRoute.getMap().clear();
+                mapRoute.drawRoute();
+                mapRoute.addWaypoints();
+                mapRoute.moveCameraToWaypoint(0);
 
-                }catch(NullPointerException e){
-                    Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
-                }catch (Exception e2) {
-                    Log.e("Error", "Exception onPostExecute: " + e2.toString());
-                }
-
+            }catch(NullPointerException e){
+                Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
+            }catch (Exception e2) {
+                Log.e("Error", "Exception onPostExecute: " + e2.toString());
             }
             pDialog.dismiss();
 

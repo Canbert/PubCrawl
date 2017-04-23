@@ -66,19 +66,6 @@ public class MapRoute {
                 e.printStackTrace();
             }
         }
-
-        CameraUpdate center = null;
-        try {
-            center = CameraUpdateFactory.newLatLng(
-                    new LatLng(getBar(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat")
-                            ,getBar(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-
-        map.moveCamera(center);
-        map.animateCamera(zoom);
     }
 
     public JSONObject getBar(int index){
@@ -104,6 +91,21 @@ public class MapRoute {
                             new LatLng(dest.latitude, dest.longitude))
                     .width(5).color(Color.RED).geodesic(true));
         }
+    }
+
+    public void moveCameraToWaypoint(int index){
+        CameraUpdate center = null;
+        try {
+            center = CameraUpdateFactory.newLatLng(
+                    new LatLng(getBar(index).getJSONObject("geometry").getJSONObject("location").getDouble("lat")
+                            ,getBar(index).getJSONObject("geometry").getJSONObject("location").getDouble("lng")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(10);
+
+        map.moveCamera(center);
+        map.animateCamera(zoom);
     }
 
     public List<LatLng> decodePoly(String encoded) {
