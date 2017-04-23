@@ -1,6 +1,9 @@
 package com.rgu.scott1508551.pubcrawl;
 
+import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -8,11 +11,14 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,6 +57,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
     private MapRoute mapRoute;
 
+    private DatabaseUtility db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +69,9 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         //set the bars list
         barsList = (ListView)this.findViewById(R.id.listViewPubs);
+
+        //set the database
+        db = new DatabaseUtility(this);
 
         //set the buttons
         btnSave = (Button)this.findViewById(R.id.btnSaveCrawl);
@@ -152,7 +163,34 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         Intent in;
 
+        LayoutInflater li = LayoutInflater.from(this);
+        View promptView = li.inflate(R.layout.prompts,null);
+
         if(v.getId() == R.id.btnSaveCrawl){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);// R.style.AppTheme
+            builder.setTitle(R.string.save_crawl);
+            builder.setView(promptView);
+
+            final EditText input = (EditText)promptView.findViewById(R.id.editTextDialogUserInput);
+
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    db.putCrawl(input.getText().toString(),data.getStringArrayList("bars").toString());
+                }
+            });
+
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+//            dialog.getWindow().setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+
 
         } else{
             data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) mapRoute.getPontos());
