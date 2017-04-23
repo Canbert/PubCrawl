@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -198,6 +199,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         if(v.getId() == R.id.btnSaveCrawl){
 
         } else{
+            data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) pontos);
+
             in = new Intent(EditCrawlActivity.this, CrawlActivity.class);
             in.putExtras(data);
             startActivity(in);

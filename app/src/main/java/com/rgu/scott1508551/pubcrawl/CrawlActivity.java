@@ -2,6 +2,7 @@ package com.rgu.scott1508551.pubcrawl;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,6 +43,9 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
         //set the bundle to the bundle sent from generate activity
         data = getIntent().getExtras();
 
+        Log.d("BUNDLE PONTOS", String.valueOf(data.getParcelableArrayList("pontos")));
+//        Log.d("BUNDLE BARS", );
+
     }
 
     @Override
@@ -51,6 +55,6 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        map = googleMap;
     }
 }
