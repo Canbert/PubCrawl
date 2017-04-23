@@ -166,6 +166,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         LayoutInflater li = LayoutInflater.from(this);
         View promptView = li.inflate(R.layout.prompts,null);
 
+        data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) mapRoute.getPontos());
+
         if(v.getId() == R.id.btnSaveCrawl){
             final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);// R.style.AppTheme
             builder.setTitle(R.string.save_crawl);
@@ -176,7 +178,9 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
             builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    db.putCrawl(input.getText().toString(),data.getStringArrayList("bars").toString());
+                    db.putCrawl(input.getText().toString(),
+                            data.getStringArrayList("bars").toString(),
+                            data.getStringArrayList("pontos").toString());
                 }
             });
 
@@ -193,7 +197,6 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
 
         } else{
-            data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) mapRoute.getPontos());
 
             in = new Intent(EditCrawlActivity.this, CrawlActivity.class);
             in.putExtras(data);

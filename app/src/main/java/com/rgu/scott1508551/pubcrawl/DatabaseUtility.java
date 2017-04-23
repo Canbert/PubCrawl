@@ -59,7 +59,8 @@ public class DatabaseUtility {
         ArrayList json = null;
 
         String[] projection = {
-                FeedReaderContract.FeedEntry.COLUMN_NAME_JSON
+                FeedReaderContract.FeedEntry.COLUMN_NAME_JSON,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS
         };
 
         // Filter results WHERE "crawlname" = 'name'
