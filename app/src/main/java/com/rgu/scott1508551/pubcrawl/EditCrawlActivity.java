@@ -12,6 +12,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -119,7 +121,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         return str;
     }
 
-    private void addWapointsToMap(){
+    private void addWaypoints(){
 
         for(int i = 0; i < bars.size(); i++){
             try {
@@ -127,6 +129,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
                         .position(new LatLng(getBar(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat")
                                 ,getBar(i).getJSONObject("geometry").getJSONObject("location").getDouble("lng")))
                         .title(getBar(i).getString("name"))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 );
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -204,13 +207,14 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
                 LatLng src = pontos.get(i);
                 LatLng dest = pontos.get(i + 1);
                 try{
+
                     //here is where it will draw the polyline in your map
                     Polyline line = map.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
-                                    new LatLng(dest.latitude,                dest.longitude))
-                            .width(2).color(Color.RED).geodesic(true));
+                                    new LatLng(dest.latitude, dest.longitude))
+                            .width(5).color(Color.RED).geodesic(true));
 
-                    addWapointsToMap();
+                    addWaypoints();
 
                 }catch(NullPointerException e){
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
