@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,11 +100,19 @@ public class DatabaseUtility {
                         cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
 
                 for(int i = 0; i < jsonBars.length(); i++){
-//                    bar
+                    bars.add(jsonBars.get(i));
                 }
 
-                data.putParcelableArrayList("bars",bars);
-//                data.putParcelableArrayList("pontos",pontos);
+                for(int i = 0; i < jsonPontos.length(); i++){
+                    JSONObject obj = new JSONObject(jsonPontos.get(i).toString());
+                    pontos.add(new LatLng(
+                            obj.getDouble("lat"),
+                            obj.getDouble("lng")
+                    ));
+                }
+
+                data.putStringArrayList("bars",bars);
+                data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) pontos);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

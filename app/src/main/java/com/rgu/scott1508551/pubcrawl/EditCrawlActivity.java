@@ -180,7 +180,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
                 public void onClick(DialogInterface dialog, int which) {
                     db.putCrawl(input.getText().toString(),
                             data.getStringArrayList("bars").toString(),
-                            data.getStringArrayList("pontos").toString());
+                            data.getParcelableArrayList("pontos").toString());
                 }
             });
 
