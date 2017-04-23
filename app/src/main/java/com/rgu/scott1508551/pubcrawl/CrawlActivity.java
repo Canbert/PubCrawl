@@ -13,6 +13,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONException;
+
 public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener{
 
     private GoogleMap map;
@@ -24,6 +26,9 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
     private Bundle data;
 
     private MapRoute mapRoute;
+
+    private int currentBar;
+    private int clickCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +48,41 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
         //button listener
         btnNext.setOnClickListener(this);
 
+        currentBar = 0;
+        clickCount = 0;
+
         //set the bundle to the bundle sent from generate activity
         data = getIntent().getExtras();
 
         Log.d("BUNDLE PONTOS", String.valueOf(data.getParcelableArrayList("pontos")));
 //        Log.d("BUNDLE BARS", );
-
     }
 
     @Override
     public void onClick(View v) {
+        if(clickCount == 0){
 
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mapRoute = new MapRoute(googleMap,data.getStringArrayList("bars"), data.<LatLng>getParcelableArrayList("pontos"));
 
+        setBarDetails();
+
         mapRoute.getMap().clear();
         mapRoute.drawRoute();
         mapRoute.addWaypoints();
-        mapRoute.moveCameraToWaypoint(0);
+        mapRoute.moveCameraToWaypoint(currentBar);
+    }
+
+    private void setBarDetails(){
+        try {
+            barName.setText(mapRoute.getBar(currentBar).getString("name"));
+            barLocation.setText(mapRoute.getBar(currentBar).getString("vicinity"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
