@@ -13,4 +13,8 @@
     <!--Edit Crawl View-->
     <string name="edit_crawl_start">Start Crawl</string>
     <string name="edit_crawl_save">Save Crawl</string>
+
+    <!--Crawl View-->
+    <string name="crawl_next">Next Bar</string>
+    <string name="crawl_finish">Finish Crawl</string>
 </resources>
