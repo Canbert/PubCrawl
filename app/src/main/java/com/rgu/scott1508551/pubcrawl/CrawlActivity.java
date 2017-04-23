@@ -49,7 +49,7 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
     private MapRoute mapRoute;
 
     private int currentBar;
-    private int clickCount;
+    private Boolean started;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -72,7 +72,7 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
         btnNext.setOnClickListener(this);
 
         currentBar = 0;
-        clickCount = 0;
+        started = false;
 
         //set the bundle to the bundle sent from generate activity
         data = getIntent().getExtras();
@@ -90,8 +90,18 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onClick(View v) {
-        if(clickCount == 0){
-
+        if(!started){
+            btnNext.setText(R.string.crawl_next);
+            started = true;
+        }
+        else if(currentBar == mapRoute.getBars().size() - 1){
+            btnNext.setText(R.string.crawl_finish);
+        }
+        else{
+            currentBar++;
+            Log.d("CURRENT BAR", String.valueOf(currentBar));
+            mapRoute.moveCameraToWaypoint(currentBar);
+            setBarDetails();
         }
     }
 
