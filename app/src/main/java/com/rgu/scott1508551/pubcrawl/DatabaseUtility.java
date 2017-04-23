@@ -4,8 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseUtility {
     private SaveCrawlDatabaseHelper saveCrawlDatabaseHelper;
@@ -54,9 +61,9 @@ public class DatabaseUtility {
         return crawls;
     }
 
-    public ArrayList getCrawl(String name){
+    public Bundle getCrawl(String name){
 
-        ArrayList json = null;
+        Bundle data = new Bundle();
 
         String[] projection = {
                 FeedReaderContract.FeedEntry.COLUMN_NAME_JSON,
@@ -79,10 +86,29 @@ public class DatabaseUtility {
 
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
-            json.add(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
-            json.add(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
+
+            try {
+
+                ArrayList bars = new ArrayList();
+                List<LatLng> pontos = new ArrayList<>();
+
+                JSONArray jsonBars =  new JSONArray(
+                        cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
+                JSONArray jsonPontos = new JSONArray(
+                        cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
+
+                for(int i = 0; i < jsonBars.length(); i++){
+                    bar
+                }
+
+                data.putParcelableArrayList("bars",bars);
+                data.putParcelableArrayList("pontos",pontos);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
-        return json;
+        return data;
     }
 }

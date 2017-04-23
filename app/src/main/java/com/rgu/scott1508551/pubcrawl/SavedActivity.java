@@ -59,6 +59,7 @@ public class SavedActivity extends AppCompatActivity implements SearchView.OnQue
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String yourData = (String) db.getCrawls().get(position);
-        Log.d("ITEM", yourData);
+//        ArrayList array = db.getCrawl(yourData);
+        Log.d("ITEM", String.valueOf(db.getCrawl(yourData)));
     }
 }
