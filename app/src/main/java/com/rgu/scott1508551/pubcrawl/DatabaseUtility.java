@@ -53,6 +53,36 @@ public class DatabaseUtility {
         return crawls;
     }
 
+    public String getCrawl(String name){
+
+        String json = null;
+
+        String[] projection = {
+                FeedReaderContract.FeedEntry.COLUMN_NAME_JSON
+        };
+
+        // Filter results WHERE "crawlname" = 'name'
+        String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME + " = ?";
+        String[] selectionArgs = { name };
+
+        Cursor cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        if(cursor.getCount() > 0){
+            cursor.moveToFirst();
+            json = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON));
+        }
+
+        return json;
+    }
+
     public void dropTable(){
         db.execSQL("DROP TABLE IF EXISTS " + FeedReaderContract.FeedEntry.TABLE_NAME);
     }
