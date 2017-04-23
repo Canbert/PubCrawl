@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener{
 
@@ -21,6 +22,8 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
     private Button btnNext;
 
     private Bundle data;
+
+    private MapRoute mapRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,11 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
+        mapRoute = new MapRoute(googleMap,data.getStringArrayList("bars"), data.<LatLng>getParcelableArrayList("pontos"));
+
+        mapRoute.getMap().clear();
+        mapRoute.drawRoute();
+        mapRoute.addWaypoints();
+        mapRoute.moveCameraToWaypoint(0);
     }
 }
