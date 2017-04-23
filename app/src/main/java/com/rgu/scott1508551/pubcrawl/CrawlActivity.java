@@ -93,6 +93,7 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
         if(!started){
             btnNext.setText(R.string.crawl_next);
             started = true;
+            mapRoute.moveCameraToWaypoint(currentBar);
         }
         else if(currentBar == mapRoute.getBars().size() - 1){
             btnNext.setText(R.string.crawl_finish);
