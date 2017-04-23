@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +40,9 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
     private Bundle data;
     private ArrayList bars;
 
+    private ListView barsList;
+    private ArrayAdapter adapter;
+
     private ProgressDialog pDialog;
 
     private String stringUrl;
@@ -51,11 +57,18 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         MapFragment mapFrag = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
+        //set the bars list
+        barsList = (ListView)this.findViewById(R.id.listViewPubs);
+
         //set the bundle to the bundle sent from generate activity
         data = getIntent().getExtras();
         Log.d("Edit Crawl Bundle", data.toString());
 
         bars = data.getStringArrayList("bars");
+
+        // bars list set the array for it
+        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,barsToArrayList());
+        barsList.setAdapter(adapter);
 
         //set the start end end points
         String origin = null;
@@ -119,6 +132,21 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         return str;
+    }
+
+    private ArrayList barsToArrayList(){
+
+        ArrayList arrayList = new ArrayList();
+
+        for(int i = 0; i < bars.size(); i++){
+            try {
+                arrayList.add(getBar(i).getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return arrayList;
     }
 
     private void addWaypoints(){
