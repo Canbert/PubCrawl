@@ -28,6 +28,12 @@ public class MapRoute {
         this.bars = bars;
     }
 
+    public MapRoute(GoogleMap map, ArrayList bars, List<LatLng> pontos) {
+        this.map = map;
+        this.bars = bars;
+        this.pontos = pontos;
+    }
+
     public GoogleMap getMap() {
         return map;
     }
