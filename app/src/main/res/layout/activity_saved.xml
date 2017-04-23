@@ -8,10 +8,12 @@
     tools:context="com.rgu.scott1508551.pubcrawl.SavedActivity">
 
     <SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="40dp" />
 
     <ListView
+        android:id="@+id/listViewSaved"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
