@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableStart="@android:drawable/ic_menu_save"
+            android:drawableLeft="@android:drawable/ic_menu_save"
             android:text="@string/edit_crawl_save"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
