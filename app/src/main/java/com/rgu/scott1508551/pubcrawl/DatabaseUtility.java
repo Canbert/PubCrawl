@@ -16,11 +16,12 @@ public class DatabaseUtility {
         this.db = saveCrawlDatabaseHelper.getWritableDatabase();
     }
 
-    public void putCrawl(String crawlName, String json){
+    public void putCrawl(String crawlName, String json, String pontos){
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME, crawlName);
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON, json);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON, pontos);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
@@ -53,9 +54,9 @@ public class DatabaseUtility {
         return crawls;
     }
 
-    public String getCrawl(String name){
+    public ArrayList getCrawl(String name){
 
-        String json = null;
+        ArrayList json = null;
 
         String[] projection = {
                 FeedReaderContract.FeedEntry.COLUMN_NAME_JSON
@@ -77,13 +78,10 @@ public class DatabaseUtility {
 
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
-            json = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON));
+            json.add(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
+            json.add(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
         }
 
         return json;
-    }
-
-    public void dropTable(){
-        db.execSQL("DROP TABLE IF EXISTS " + FeedReaderContract.FeedEntry.TABLE_NAME);
     }
 }

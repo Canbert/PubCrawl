@@ -12,5 +12,6 @@ public final class FeedReaderContract {
         public static final String TABLE_NAME = "entry";
         public static final String COLUMN_NAME_CRAWLNAME = "crawlname";
         public static final String COLUMN_NAME_JSON = "json";
+        public static final String COLUMN_NAME_PONTOS = "pontos";
     }
 }

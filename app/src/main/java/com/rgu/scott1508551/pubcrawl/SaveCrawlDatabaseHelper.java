@@ -14,7 +14,8 @@ public class SaveCrawlDatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + FeedReaderContract.FeedEntry.TABLE_NAME + " (" +
                     FeedReaderContract.FeedEntry._ID + " INTEGER PRIMARY KEY," +
                     FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME + " TEXT," +
-                    FeedReaderContract.FeedEntry.COLUMN_NAME_JSON + " TEXT)";
+                    FeedReaderContract.FeedEntry.COLUMN_NAME_JSON + " TEXT," +
+                    FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + FeedReaderContract.FeedEntry.TABLE_NAME;
