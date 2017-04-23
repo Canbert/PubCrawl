@@ -39,10 +39,7 @@ import java.util.List;
 
 public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
-    private GoogleMap map;
-
     private Bundle data;
-    private ArrayList bars;
 
     private ListView barsList;
     private ArrayAdapter adapter;
@@ -52,7 +49,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
     private String stringUrl;
 
-    private List<LatLng> pontos;
+    private MapRoute mapRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +74,12 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         data = getIntent().getExtras();
         Log.d("Edit Crawl Bundle", data.toString());
 
-        bars = data.getStringArrayList("bars");
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        mapRoute = new MapRoute(googleMap,data.getStringArrayList("bars"));
 
         // bars list set the array for it
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,barsToArrayList());
@@ -87,8 +89,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         String origin = null;
         String destination = null;
         try {
-            origin = getBar(0).getString("place_id");
-            destination = getBar(bars.size() - 1).getString("place_id");
+            origin = mapRoute.getBar(0).getString("place_id");
+            destination = mapRoute.getBar(mapRoute.getBars().size() - 1).getString("place_id");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -104,26 +106,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         Log.d("URL",stringUrl);
 
-
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-
         new GetDirection().execute();
-    }
-
-    private JSONObject getBar(int index){
-
-        JSONObject bar = null;
-        try {
-            bar = new JSONObject(bars.get(index).toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return bar;
     }
 
     private String waypointsString(){
@@ -131,12 +114,12 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         // start after the first and stop before the last
         try {
-            for (int i = 1; i < bars.size() - 1; i++) {
-                if (i == bars.size() - 1) {
-                        str += "place_id:" + getBar(i).getString("place_id");
+            for (int i = 1; i < mapRoute.getBars().size() - 1; i++) {
+                if (i == mapRoute.getBars().size() - 1) {
+                        str += "place_id:" + mapRoute.getBar(i).getString("place_id");
 
                 } else {
-                    str += "place_id:" + getBar(i).getString("place_id") + "|";
+                    str += "place_id:" + mapRoute.getBar(i).getString("place_id") + "|";
                 }
 
             }
@@ -151,9 +134,9 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
         ArrayList arrayList = new ArrayList();
 
-        for(int i = 0; i < bars.size(); i++){
+        for(int i = 0; i < mapRoute.getBars().size(); i++){
             try {
-                arrayList.add(getBar(i).getString("name"));
+                arrayList.add(mapRoute.getBar(i).getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -162,34 +145,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         return arrayList;
     }
 
-    private void addWaypoints(){
 
-        for(int i = 0; i < bars.size(); i++){
-            try {
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(getBar(i).getJSONObject("geometry").getJSONObject("location").getDouble("lat")
-                                ,getBar(i).getJSONObject("geometry").getJSONObject("location").getDouble("lng")))
-                        .title(getBar(i).getString("name"))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                );
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        CameraUpdate center = null;
-        try {
-            center = CameraUpdateFactory.newLatLng(
-                    new LatLng(getBar(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat")
-                    ,getBar(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(13);
-
-        map.moveCamera(center);
-        map.animateCamera(zoom);
-    }
 
     @Override
     public void onClick(View v) {
@@ -199,7 +155,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         if(v.getId() == R.id.btnSaveCrawl){
 
         } else{
-            data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) pontos);
+            data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) mapRoute.getPontos());
 
             in = new Intent(EditCrawlActivity.this, CrawlActivity.class);
             in.putExtras(data);
@@ -249,7 +205,7 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
                 JSONObject poly = route.getJSONObject("overview_polyline");
                 String polyline = poly.getString("points");
-                pontos = decodePoly(polyline);
+                mapRoute.setPontos(mapRoute.decodePoly(polyline));
 
             } catch (Exception e) {
 
@@ -260,18 +216,13 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         protected void onPostExecute(String file_url) {
-            for (int i = 0; i < pontos.size() - 1; i++) {
-                LatLng src = pontos.get(i);
-                LatLng dest = pontos.get(i + 1);
+            for (int i = 0; i < mapRoute.getPontos().size() - 1; i++) {
+                LatLng src = mapRoute.getPontos().get(i);
+                LatLng dest = mapRoute.getPontos().get(i + 1);
                 try{
 
-                    //here is where it will draw the polyline in your map
-                    Polyline line = map.addPolyline(new PolylineOptions()
-                            .add(new LatLng(src.latitude, src.longitude),
-                                    new LatLng(dest.latitude, dest.longitude))
-                            .width(5).color(Color.RED).geodesic(true));
-
-                    addWaypoints();
+//                    mapRoute.drawRoute();
+                    mapRoute.addWaypoints();
 
                 }catch(NullPointerException e){
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
@@ -283,39 +234,5 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
             pDialog.dismiss();
 
         }
-    }
-
-    private List<LatLng> decodePoly(String encoded) {
-
-        List<LatLng> poly = new ArrayList<LatLng>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng((((double) lat / 1E5)),
-                    (((double) lng / 1E5)));
-            poly.add(p);
-        }
-
-        return poly;
     }
 }
