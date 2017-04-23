@@ -122,10 +122,6 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
         new GetPubs().execute();
     }
 
-    public GenerateActivity getOuter(){
-        return GenerateActivity.this;
-    }
-
     private class GetPubs extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -192,7 +188,7 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
                         Log.d("JSON OBJ", bar.toString());
 
-                        bars.add(bar.getString("place_id"));
+                        bars.add(bar);
 
                         Log.d("JSON PLACEID", bar.getString("place_id"));
                     }
@@ -205,7 +201,7 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
                     e.printStackTrace();
                 }
 
-                in = new Intent(getOuter(), EditCrawlActivity.class);
+                in = new Intent(GenerateActivity.this, EditCrawlActivity.class);
                 in.putExtras(data);
                 Log.d("Data Bundle", data.toString());
                 startActivity(in);
