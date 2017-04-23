@@ -188,7 +188,7 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
                         Log.d("JSON OBJ", bar.toString());
 
-                        bars.add(bar);
+                        bars.add(bar.toString());
 
                         Log.d("JSON PLACEID", bar.getString("place_id"));
                     }
