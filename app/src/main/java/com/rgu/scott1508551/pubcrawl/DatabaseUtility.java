@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -30,7 +31,7 @@ public class DatabaseUtility {
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME, crawlName);
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON, json);
-        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON, pontos);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS, pontos);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
@@ -89,35 +90,48 @@ public class DatabaseUtility {
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
 
-            try {
+            Log.d("JSONBARS", cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
+            Log.d("JSONPONTOS",cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
 
+
+            try {
                 ArrayList bars = new ArrayList();
                 List<LatLng> pontos = new ArrayList<>();
 
-                JSONArray jsonBars =  new JSONArray(
-                        cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
-                JSONArray jsonPontos = new JSONArray(
-                        cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS)));
+                JSONArray jsonBars =
+                        new JSONArray(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_JSON)));
+                String stringPontos =
+                        cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_PONTOS));
 
                 for(int i = 0; i < jsonBars.length(); i++){
-                    bars.add(jsonBars.get(i));
+                    bars.add(jsonBars.getJSONObject(i).toString());
                 }
 
-                for(int i = 0; i < jsonPontos.length(); i++){
-                    JSONObject obj = new JSONObject(jsonPontos.get(i).toString());
-                    pontos.add(new LatLng(
-                            obj.getDouble("lat"),
-                            obj.getDouble("lng")
-                    ));
+                for(int i = 0; i < stringPontos.length(); i++){
+                    String latLngString = stringPontos.substring(stringPontos.indexOf("(") + 1);
+                    Log.d("LATLNGSTR", latLngString);
+
+                    latLngString = latLngString.substring(0,latLngString.indexOf(")"));
+                    Log.d("LATLNGSTR", latLngString);
+
+                    String[] latLngArr = latLngString.split(",");
+
+                    LatLng latLng = new LatLng(Double.parseDouble(latLngArr[0]),Double.parseDouble(latLngArr[1]));
+                    Log.d("LATLNG", latLng.toString());
+
+//                    stringPontos.substring(stringPontos.indexOf(")") + 1);
+
                 }
 
                 data.putStringArrayList("bars",bars);
                 data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) pontos);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
+        cursor.close();
 
         return data;
     }

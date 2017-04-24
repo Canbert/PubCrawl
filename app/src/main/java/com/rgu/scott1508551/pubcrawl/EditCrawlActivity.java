@@ -178,6 +178,10 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
             builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
+                    Log.d("SAVE BARS", data.getStringArrayList("bars").toString());
+                    Log.d("SAVE PONTOS", data.getParcelableArrayList("pontos").toString());
+
                     db.putCrawl(input.getText().toString(),
                             data.getStringArrayList("bars").toString(),
                             data.getParcelableArrayList("pontos").toString());

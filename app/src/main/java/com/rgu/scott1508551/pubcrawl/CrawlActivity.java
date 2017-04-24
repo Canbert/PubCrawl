@@ -110,6 +110,8 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mapRoute = new MapRoute(googleMap,data.getStringArrayList("bars"), data.<LatLng>getParcelableArrayList("pontos"));
 
+        Log.d("PONTS ARRAY", String.valueOf(data.<LatLng>getParcelableArrayList("pontos")));
+
         setBarDetails();
 
         mapRoute.getMap().clear();
