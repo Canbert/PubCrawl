@@ -197,13 +197,11 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
 
             dialog.show();
 
-
-
-
         } else{
 
             in = new Intent(EditCrawlActivity.this, CrawlActivity.class);
             in.putExtras(data);
+            finish();
             startActivity(in);
         }
     }
