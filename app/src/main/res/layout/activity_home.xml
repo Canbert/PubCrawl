@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/bottlecap" />
+        app:srcCompat="@drawable/bottlecap"
+        android:layout_weight="0.75" />
 
     <Button
         android:id="@+id/btnGenerate"

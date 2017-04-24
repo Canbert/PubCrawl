@@ -6,7 +6,6 @@
     <string name="home_saved">Saved Crawls</string>
 
     <!--Generate View-->
-    <string name="generate_location">Location</string>
     <string name="generate_pubs">Number of Pubs:</string>
     <string name="generate_create">Create Crawl</string>
 
