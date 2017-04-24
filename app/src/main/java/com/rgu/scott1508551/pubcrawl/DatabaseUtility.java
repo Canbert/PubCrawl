@@ -37,6 +37,34 @@ public class DatabaseUtility {
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
     }
 
+    public boolean crawlExists(String name){
+        String[] projection = {
+                FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME
+        };
+
+        // Filter results WHERE "crawlname" = 'name'
+        String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME + " = ?";
+        String[] selectionArgs = { name };
+
+        Cursor cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        if(cursor.getCount() > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
     public ArrayList getCrawls(){
         String[] projection = {
                 FeedReaderContract.FeedEntry.COLUMN_NAME_CRAWLNAME
