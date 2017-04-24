@@ -3,6 +3,7 @@ package com.rgu.scott1508551.pubcrawl;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -97,62 +98,64 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
         else if(currentBar == mapRoute.getBars().size() - 1){
             btnNext.setText(R.string.crawl_finish);
 
-            LayoutInflater li = LayoutInflater.from(this);
-            final View promptView = li.inflate(R.layout.prompts,null);
+            if(!data.getBoolean("saved")) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);
-            builder.setMessage("Save Crawl?");
+                LayoutInflater li = LayoutInflater.from(this);
+                final View promptView = li.inflate(R.layout.prompts, null);
 
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final AlertDialog.Builder builder2 = new AlertDialog.Builder(CrawlActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog);
-                    builder2.setTitle(R.string.save_crawl);
-                    builder2.setMessage("");
-                    builder2.setView(promptView);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);
+                builder.setMessage("Save Crawl?");
 
-                    final EditText input = (EditText)promptView.findViewById(R.id.editTextDialogUserInput);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final AlertDialog.Builder builder2 = new AlertDialog.Builder(CrawlActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog);
+                        builder2.setTitle(R.string.save_crawl);
+                        builder2.setMessage("");
+                        builder2.setView(promptView);
 
-                    builder2.setPositiveButton(android.R.string.ok, null);
-                    builder2.setNegativeButton(android.R.string.cancel, null);
+                        final EditText input = (EditText) promptView.findViewById(R.id.editTextDialogUserInput);
 
-                    final AlertDialog saveDialog = builder2.create();
+                        builder2.setPositiveButton(android.R.string.ok, null);
+                        builder2.setNegativeButton(android.R.string.cancel, null);
 
-                    saveDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        final AlertDialog saveDialog = builder2.create();
 
-                        @Override
-                        public void onShow(final DialogInterface dialog) {
+                        saveDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
-                            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                            button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onShow(final DialogInterface dialog) {
 
-                                @Override
-                                public void onClick(View view) {
-                                    Log.d("SAVE BARS", data.getStringArrayList("bars").toString());
-                                    Log.d("SAVE PONTOS", data.getParcelableArrayList("pontos").toString());
+                                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                                button.setOnClickListener(new View.OnClickListener() {
 
-                                    if(db.crawlExists(input.getText().toString())){
-                                        ((AlertDialog) dialog).setMessage("Crawl name already used");
-                                    }else{
-                                        db.putCrawl(input.getText().toString(),
-                                                data.getStringArrayList("bars").toString(),
-                                                data.getParcelableArrayList("pontos").toString());
-                                        //Dismiss once everything is OK.
-                                        dialog.dismiss();
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d("SAVE BARS", data.getStringArrayList("bars").toString());
+                                        Log.d("SAVE PONTOS", data.getParcelableArrayList("pontos").toString());
+
+                                        if (db.crawlExists(input.getText().toString())) {
+                                            ((AlertDialog) dialog).setMessage("Crawl name already used");
+                                        } else {
+                                            db.putCrawl(input.getText().toString(),
+                                                    data.getStringArrayList("bars").toString(),
+                                                    data.getParcelableArrayList("pontos").toString());
+                                            //Dismiss once everything is OK.
+                                            dialog.dismiss();
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
 
-                    saveDialog.show();
-                }
-            });
-            builder.setNegativeButton("No", null);
+                        saveDialog.show();
+                    }
+                });
+                builder.setNegativeButton("No", null);
 
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         }
         else{
             currentBar++;

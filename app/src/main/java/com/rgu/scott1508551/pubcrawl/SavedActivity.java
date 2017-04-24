@@ -61,6 +61,8 @@ public class SavedActivity extends AppCompatActivity implements SearchView.OnQue
         Log.d("ITEM", String.valueOf(db.getCrawl(yourData)));
         data = db.getCrawl(yourData);
 
+        data.putBoolean("saved",true);
+
         in = new Intent(SavedActivity.this, CrawlActivity.class);
         in.putExtras(data);
         Log.d("Data Bundle", data.toString());
