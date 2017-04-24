@@ -107,21 +107,26 @@ public class DatabaseUtility {
                     bars.add(jsonBars.getJSONObject(i).toString());
                 }
 
+
                 for(int i = 0; i < stringPontos.length(); i++){
                     String latLngString = stringPontos.substring(stringPontos.indexOf("(") + 1);
-                    Log.d("LATLNGSTR", latLngString);
+//                    Log.d("LATLNGSTR", latLngString);
 
                     latLngString = latLngString.substring(0,latLngString.indexOf(")"));
-                    Log.d("LATLNGSTR", latLngString);
+//                    Log.d("LATLNGSTR", latLngString);
 
                     String[] latLngArr = latLngString.split(",");
 
                     LatLng latLng = new LatLng(Double.parseDouble(latLngArr[0]),Double.parseDouble(latLngArr[1]));
-                    Log.d("LATLNG", latLng.toString());
+//                    Log.d("LATLNG", latLng.toString());
 
-//                    stringPontos.substring(stringPontos.indexOf(")") + 1);
+                    pontos.add(latLng);
+                    stringPontos = stringPontos.substring(stringPontos.indexOf(")") + 2);
+                    Log.d("PONTOS STRING",stringPontos);
 
                 }
+
+                Log.d("PONTOS", pontos.toString());
 
                 data.putStringArrayList("bars",bars);
                 data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) pontos);

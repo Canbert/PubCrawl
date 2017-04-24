@@ -1,6 +1,7 @@
 package com.rgu.scott1508551.pubcrawl;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,8 @@ public class SavedActivity extends AppCompatActivity implements SearchView.OnQue
     private SearchView searchView;
 
     private DatabaseUtility db;
+
+    private Bundle data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +61,16 @@ public class SavedActivity extends AppCompatActivity implements SearchView.OnQue
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent in;
+
         String yourData = (String) db.getCrawls().get(position);
-//        ArrayList array = db.getCrawl(yourData);
         Log.d("ITEM", String.valueOf(db.getCrawl(yourData)));
+        data = db.getCrawl(yourData);
+
+        in = new Intent(SavedActivity.this, CrawlActivity.class);
+        in.putExtras(data);
+        Log.d("Data Bundle", data.toString());
+        startActivity(in);
+
     }
 }
