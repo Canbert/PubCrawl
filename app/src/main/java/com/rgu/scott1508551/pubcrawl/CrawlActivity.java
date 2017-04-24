@@ -96,7 +96,6 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
             mapRoute.moveCameraToWaypoint(currentBar);
         }
         else if(currentBar == mapRoute.getBars().size() - 1){
-            btnNext.setText(R.string.crawl_finish);
 
             if(!data.getBoolean("saved")) {
 
@@ -142,6 +141,8 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
                                                     data.getParcelableArrayList("pontos").toString());
                                             //Dismiss once everything is OK.
                                             dialog.dismiss();
+                                            finish();
+                                            startActivity(new Intent(CrawlActivity.this,HomeActivity.class));
                                         }
                                     }
                                 });
@@ -155,6 +156,10 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }else{
+                Log.d("FINISHED","ALREADY SAVED");
+                finish();
+                startActivity(new Intent(this,HomeActivity.class));
             }
         }
         else{
@@ -162,6 +167,9 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
             Log.d("CURRENT BAR", String.valueOf(currentBar));
             mapRoute.moveCameraToWaypoint(currentBar);
             setBarDetails();
+            if(currentBar == mapRoute.getBars().size() - 1){
+                btnNext.setText(R.string.crawl_finish);
+            }
         }
     }
 
