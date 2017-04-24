@@ -169,35 +169,49 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
         data.putParcelableArrayList("pontos", (ArrayList<? extends Parcelable>) mapRoute.getPontos());
 
         if(v.getId() == R.id.btnSaveCrawl){
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);// R.style.AppTheme
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog);
             builder.setTitle(R.string.save_crawl);
+            builder.setMessage("");
             builder.setView(promptView);
 
             final EditText input = (EditText)promptView.findViewById(R.id.editTextDialogUserInput);
 
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setNegativeButton(android.R.string.cancel, null);
 
-                    Log.d("SAVE BARS", data.getStringArrayList("bars").toString());
-                    Log.d("SAVE PONTOS", data.getParcelableArrayList("pontos").toString());
-
-                    db.putCrawl(input.getText().toString(),
-                            data.getStringArrayList("bars").toString(),
-                            data.getParcelableArrayList("pontos").toString());
-                }
-            });
-
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-
-            AlertDialog dialog = builder.create();
+            final AlertDialog dialog = builder.create();
 //            dialog.getWindow().setLayout(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                @Override
+                public void onShow(final DialogInterface dialog) {
+
+                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("SAVE BARS", data.getStringArrayList("bars").toString());
+                            Log.d("SAVE PONTOS", data.getParcelableArrayList("pontos").toString());
+
+                            if(db.crawlExists(input.getText().toString())){
+                                ((AlertDialog) dialog).setMessage("Crawl name already used");
+                            }else{
+                                db.putCrawl(input.getText().toString(),
+                                        data.getStringArrayList("bars").toString(),
+                                        data.getParcelableArrayList("pontos").toString());
+                                //Dismiss once everything is OK.
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                }
+            });
+
             dialog.show();
+
+
 
 
         } else{
