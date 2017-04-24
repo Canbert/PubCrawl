@@ -39,6 +39,12 @@ public class SavedActivity extends AppCompatActivity implements SearchView.OnQue
         savedList.setOnItemClickListener(this);
 
         searchView.setOnQueryTextListener(this);
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.setIconified(false);
+            }
+        });
 
     }
 
