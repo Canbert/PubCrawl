@@ -1,8 +1,22 @@
 <resources>
     <string name="app_name">Pub Crawl</string>
+
+    <!--Home View-->
     <string name="home_generate">Generate Crawl</string>
     <string name="home_saved">Saved Crawls</string>
+
+    <!--Generate View-->
     <string name="generate_location">Location</string>
     <string name="generate_pubs">Number of Pubs:</string>
     <string name="generate_create">Create Crawl</string>
+
+    <!--Edit Crawl View-->
+    <string name="edit_crawl_start">Start Crawl</string>
+    <string name="edit_crawl_save">Save Crawl</string>
+
+    <!--Crawl View-->
+    <string name="crawl_next">Next Bar</string>
+    <string name="crawl_finish">Finish Crawl</string>
+
+    <string name="save_crawl">Crawl Name</string>
 </resources>
