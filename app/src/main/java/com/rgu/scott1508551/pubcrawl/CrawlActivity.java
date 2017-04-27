@@ -152,7 +152,13 @@ public class CrawlActivity extends AppCompatActivity implements OnMapReadyCallba
                         saveDialog.show();
                     }
                 });
-                builder.setNegativeButton("No", null);
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        startActivity(new Intent(CrawlActivity.this,HomeActivity.class));
+                    }
+                });
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
