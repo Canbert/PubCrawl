@@ -184,6 +184,8 @@ public class EditCrawlActivity extends AppCompatActivity implements OnMapReadyCa
                             if(db.crawlExists(input.getText().toString())){
                                 ((AlertDialog) dialog).setMessage("Crawl name already used");
                             }else{
+                                data.putBoolean("saved",true);
+
                                 db.putCrawl(input.getText().toString(),
                                         data.getStringArrayList("bars").toString(),
                                         data.getParcelableArrayList("pontos").toString());
