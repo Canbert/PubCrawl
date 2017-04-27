@@ -109,7 +109,7 @@ public class MapRoute {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(10);
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(14);
 
         map.moveCamera(center);
         map.animateCamera(zoom);

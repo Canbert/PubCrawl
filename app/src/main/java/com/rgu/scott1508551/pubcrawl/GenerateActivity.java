@@ -109,9 +109,24 @@ public class GenerateActivity extends FragmentActivity implements OnMapReadyCall
 
     @Override
     public void onClick(View v) {
+
+        float radius;
+        float zoomLevel = map.getCameraPosition().zoom;
+
+        //based on this https://github.com/Taity-mini/CASA_CM2003/blob/master/generate/js/generate.js#L37
+        if(zoomLevel < 11){
+            radius = (2000+ (numPubs * 20))+((zoomLevel* 50)) ;
+        }
+        else if(zoomLevel > 11){
+            radius = ((2000 +(numPubs * 15))-(zoomLevel* 80));
+        }
+        else{
+            radius = 2000 + (numPubs * 20);
+        }
+
         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
                 + "location=" + map.getCameraPosition().target.latitude + "," +  map.getCameraPosition().target.longitude
-                + "&radius=2000"
+                + "&radius=" + radius
                 + "&types=bar"
                 + "&key=" + getResources().getString(R.string.google_maps_key);
 
